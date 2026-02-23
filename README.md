@@ -4,7 +4,7 @@ Welcome to the official GitHub repository for **Brew & Beans**. This project is 
 
 ## 🚀 Live Demo
 You can view the live website here: 
-**[PASTE YOUR GITHUB PAGES LINK HERE]**
+ https://hkzabi136.github.io/Cofee-Buzz-Website/
 
 ---
 
