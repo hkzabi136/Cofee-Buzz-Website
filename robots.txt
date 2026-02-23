@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+# Sitemap link ko apne dost ke GitHub link ke mutabiq update karein
+Sitemap: https://awais.github.io/brew-and-beans/sitemap.xml

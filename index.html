@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Brew & Beans | Premium Coffee Roasters</title>
+    <meta name="description" content="Brew & Beans: Discover the ultimate coffee experience with our hand-picked beans and artisanal brewing.">
+    <meta name="keywords" content="Brew & Beans, best coffee shop, espresso bar, specialty coffee">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --deep-brown: #4E342E; 
+            --gold: #BF360C;    
+            --bg-cream: #FAF3E0;         
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--white); color: #333; }
+
+        /* Navbar */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 8%; background: var(--deep-brown); color: white;
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .logo { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--bg-cream); text-decoration: none; }
+        .nav-links { list-style: none; display: flex; gap: 20px; }
+        .nav-links a { text-decoration: none; color: white; font-weight: 500; font-size: 15px; }
+        .nav-links a:hover { color: var(--bg-cream); }
+        .order-btn { background: var(--gold); color: white; padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+        /* Hero */
+        .hero {
+            height: 500px; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+            url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=1200');
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white;
+        }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: 50px; margin-bottom: 20px; font-style: italic; }
+
+        /* Menu */
+        .section-padding { padding: 70px 8%; }
+        .title { font-size: 32px; color: var(--deep-brown); margin-bottom: 40px; text-align: center; border-bottom: 3px solid var(--gold); display: block; width: 200px; margin-left: auto; margin-right: auto; }
+        
+        .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
+        .menu-card { border: 1px solid #ddd; border-radius: 12px; overflow: hidden; background: #fff; transition: 0.3s; padding-bottom: 20px; text-align: center; }
+        .menu-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .menu-card img { width: 100%; height: 220px; object-fit: cover; }
+        .menu-card h3 { margin-top: 15px; color: var(--deep-brown); }
+        .price-tag { color: var(--gold); font-weight: bold; font-size: 22px; display: block; margin: 10px 0; }
+
+        /* Blog Section */
+        #blog-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .blog-box { background: var(--bg-cream); padding: 25px; border-radius: 10px; border-top: 5px solid var(--deep-brown); }
+
+        /* Map */
+        #map-area { height: 400px; width: 100%; border-radius: 15px; margin-top: 20px; }
+
+        footer { background: #2D1B17; color: #fff; padding: 50px 8%; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">BREW & BEANS</a>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#menu">The Menu</a></li>
+            <li><a href="#blog">Our Stories</a></li>
+            <li><a href="#location">Find Us</a></li>
+        </ul>
+        <button class="order-btn" onclick="document.getElementById('menu').scrollIntoView()">ORDER NOW</button>
+    </nav>
+
+    <header class="hero" id="home">
+        <h1>Artisan Coffee, Crafted For You</h1>
+        <p style="font-size: 18px; max-width: 700px;">Join us for a journey of taste and aroma in every single sip.</p>
+    </header>
+
+    <section class="section-padding" id="menu">
+        <h2 class="title">Coffee Menu</h2>
+        <div class="menu-container">
+            <div class="menu-card">
+                <img src="https://images.unsplash.com/photo-1572286258217-40142c1c6a70?w=400" alt="Iced Coffee">
+                <h3>Caramel Iced Latte</h3>
+                <span class="price-tag">$5.50</span>
+                <button class="order-btn" onclick="addToCart('Caramel Iced Latte')">ADD TO BASKET</button>
+            </div>
+            <div class="menu-card">
+                <img src="https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=400" alt="Mocha">
+                <h3>Rich Dark Mocha</h3>
+                <span class="price-tag">$4.95</span>
+                <button class="order-btn" onclick="addToCart('Rich Dark Mocha')">ADD TO BASKET</button>
+            </div>
+            <div class="menu-card">
+                <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400" alt="Macchiato">
+                <h3>Double Macchiato</h3>
+                <span class="price-tag">$3.80</span>
+                <button class="order-btn" onclick="addToCart('Double Macchiato')">ADD TO BASKET</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" id="blog" style="background: #f9f9f9;">
+        <h2 class="title">Our Journal</h2>
+        <div id="blog-section"></div>
+    </section>
+
+    <section class="section-padding" id="location">
+        <h2 class="title">Visit Us</h2>
+        <p style="text-align: center; margin-bottom: 20px;"><i class="fas fa-compass"></i> 321 Coffee Lane, Downtown. | Parking: On-site parking for guests.</p>
+        <div id="map-area"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Brew & Beans Roastery. All rights reserved.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // SweetAlert Alert
+        function addToCart(itemName) {
+            Swal.fire({
+                title: 'Item Added!',
+                text: itemName + ' is now in your cart.',
+                icon: 'success',
+                confirmButtonColor: '#BF360C',
+                background: '#FAF3E0'
+            });
+        }
+
+        // Dynamic JSON Blog
+        const blogData = [
+            { h: "Coffee Harvesting", p: "The journey from the farm to your cup." },
+            { h: "Grinding Secrets", p: "Why grind size matters for your brew." },
+            { h: "Morning Coffee", p: "The best time to drink your first cup." },
+            { h: "Sustainability", p: "Our eco-friendly packaging mission." },
+            { h: "The Roast Lab", p: "How we develop our signature flavors." },
+            { h: "Home Brewing", p: "Top 5 tips for the perfect French Press." },
+            { h: "Latte Mastery", p: "How to steam milk like a professional." },
+            { h: "Health & Coffee", p: "Antioxidants and the benefits of coffee." },
+            { h: "Seasonal Blends", p: "Our new winter special is out now!" },
+            { h: "Visit Our Shop", p: "The architecture behind Brew & Beans." }
+        ];
+
+        const container = document.getElementById('blog-section');
+        blogData.forEach(post => {
+            container.innerHTML += `<div class="blog-box"><h3>${post.h}</h3><p>${post.p}</p></div>`;
+        });
+
+        // Leaflet Map (Different City: Chicago)
+        var map = L.map('map-area').setView([41.8781, -87.6298], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.marker([41.8781, -87.6298]).addTo(map).bindPopup('Brew & Beans HQ').openPopup();
+    </script>
+</body>
+</html>
